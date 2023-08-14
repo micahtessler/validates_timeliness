@@ -17,6 +17,24 @@ RSpec.describe ValidatesTimeliness::Validator, ":format option" do
     it "should be valid for date instance" do
       valid!(:birth_date, Date.new(2022,12,23))
     end
+
+    context "when the format is dd/mm/yyyy" do
+      before do
+        Person.validates_date :birth_date, format: "dd/mm/yyyy"
+      end
+
+      it "should be valid for string given in the right format" do
+        valid!(:birth_date, '23/12/2023')
+      end
+
+      it "should not be valid for string given in the wrong format" do
+        invalid!(:birth_date, '2023-12-23', /is not a valid date/)
+      end
+
+      it "should be valid for date instance" do
+        valid!(:birth_date, Date.new(2022,12,23))
+      end
+    end
   end
 
   describe "for time type" do
