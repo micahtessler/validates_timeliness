@@ -53,6 +53,24 @@ RSpec.describe ValidatesTimeliness::Validator, ":format option" do
     it "should be valid for date instance" do
       valid!(:birth_time, Time.new(2010, 1, 1, 0, 0, 0))
     end
+
+    context "when the time format is 'ss-nn-hh' " do
+      before do
+        Person.validates_time :birth_time, format: "ss-nn-hh"
+      end
+
+      it "should be valid for string given in the right format" do
+        valid!(:birth_time, '23-34-01')
+      end
+
+      it "should not be valid for string given in the wrong format" do
+        invalid!(:birth_time, '01:34:23', /is not a valid time/)
+      end
+
+      it "should be valid for date instance" do
+        valid!(:birth_time, Time.new(2010, 1, 1, 1, 34, 23))
+      end
+    end
   end
 
   describe "for datetime type" do
@@ -70,6 +88,24 @@ RSpec.describe ValidatesTimeliness::Validator, ":format option" do
 
     it "should be valid for date instance" do
       valid!(:birth_datetime, DateTime.new(2010, 1, 1, 0, 0, 0))
+    end
+
+    context "when the datetime format is 'ss/nn/hh/dd/mm/yyyy' " do
+      before do
+        Person.validates_datetime :birth_datetime, format: "ss/nn/hh/dd/mm/yyyy"
+      end
+
+      it "should be valid for string given in the right format" do
+        valid!(:birth_datetime, "00/00/00/01/01/2010")
+      end
+
+      it "should not be valid for string given in the wrong format" do
+      invalid!(:birth_datetime, "2010-01-01 00:00:00", /is not a valid datetime/)
+      end
+
+      it "should be valid for date instance" do
+        valid!(:birth_datetime, DateTime.new(2010, 1, 1, 0, 0, 0))
+      end
     end
   end
 end
